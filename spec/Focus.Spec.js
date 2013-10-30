@@ -91,6 +91,18 @@ feature("Optional marker",function(){
 		});
 	});
 
+	scenario("Placeholders not filled to marker",function(){
+		given("a two character mask and autoclear:false",function(){
+			input.mask("99", {autoclear:false});
+		});
+		when("typing one character and leaving",function(){
+			input.mashKeys("1").blur();
+		});
+		then("value should remain partially filled",function(){
+			expect(input).toHaveValue("1");
+		});
+	});
+
 	scenario("Placeholders filled to marker",function(){
 		given("a mask with an optional marker",function(){
 			input.mask("99?99");

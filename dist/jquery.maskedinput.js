@@ -6,10 +6,10 @@
 */
 (function($) {
 	function getPasteEvent() {
-    var el = document.createElement('input'),
-        name = 'onpaste';
-    el.setAttribute(name, '');
-    return (typeof el[name] === 'function')?'paste':'input';             
+	var el = document.createElement('input'),
+		name = 'onpaste';
+	el.setAttribute(name, '');
+	return (typeof el[name] === 'function')?'paste':'input';
 }
 
 var pasteEventName = getPasteEvent() + ".mask",
@@ -80,13 +80,18 @@ $.fn.extend({
 		}
 		settings = $.extend({
 			placeholder: $.mask.placeholder, // Load default placeholder
-			completed: null
+			completed: null,
+			autoclear: true
 		}, settings);
 
 
 		defs = $.mask.definitions;
 		tests = [];
-		partialPosition = len = mask.length;
+		len = mask.length;
+		if (settings.autoclear)
+			partialPosition = len;
+		else
+			partialPosition = 0;
 		firstNonMaskPos = null;
 
 		$.each(mask.split(""), function(i, c) {
@@ -251,7 +256,8 @@ $.fn.extend({
 				var test = input.val(),
 					lastMatch = -1,
 					i,
-					c;
+					c,
+					pos;
 
 				for (i = 0, pos = 0; i < len; i++) {
 					if (tests[i]) {
@@ -299,12 +305,11 @@ $.fn.extend({
 				})
 				.bind("focus.mask", function() {
 					clearTimeout(caretTimeoutId);
-					var pos,
-						moveCaret;
+					var pos;
 
 					focusText = input.val();
 					pos = checkVal();
-					
+
 					caretTimeoutId = setTimeout(function(){
 						writeBuffer();
 						if (pos == mask.length) {
